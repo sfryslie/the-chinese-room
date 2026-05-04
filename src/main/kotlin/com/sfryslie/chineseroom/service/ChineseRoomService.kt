@@ -91,4 +91,8 @@ class 中文屋服务(
     fun 断开连接(事件: SessionDisconnectEvent) {
         会话记录.remove(事件.sessionId)
     }
+
+    fun 清除会话(sessionId: String) {
+        会话记录.remove(sessionId)
+    }
 }
