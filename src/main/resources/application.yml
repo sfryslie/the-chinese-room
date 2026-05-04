@@ -10,6 +10,22 @@ spring:
       chat:
         options:
           model: claude-haiku-4-5
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-4o-mini
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      chat:
+        options:
+          model: llama3.2
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:}
+        chat:
+          options:
+            model: gemini-2.0-flash
 
 chinese-room:
   model: claude-haiku-4-5
