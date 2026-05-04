@@ -53,11 +53,12 @@ src/main/resources/
 
 | 中文标识符 | 英文含义 |
 |---|---|
-| `聊天客户端` | ChatClient 实例 |
+| `提供商映射` | Map<String, ChatClient>，懒加载，通过 ApplicationContext 发现所有 ChatModel bean |
 | `会话记录` | 按会话 ID 存储的消息历史（ConcurrentHashMap） |
 | `系统提示词` | 系统提示（见下文） |
-| `fun 对话(会话编号, 用户消息)` | 有状态对话，供 WebSocket 使用 |
-| `fun 无状态对话(用户消息)` | 无状态对话，供 REST 接口使用 |
+| `fun 获取客户端(提供商)` | 按提供商名称从映射中取 ChatClient，缺省回退到 anthropic |
+| `fun 对话(会话编号, 用户消息, 提供商)` | 有状态对话，供 WebSocket 使用，提供商可为 null |
+| `fun 无状态对话(用户消息, 提供商)` | 无状态对话，供 REST 接口使用，提供商可为 null |
 | `fun 断开连接(事件)` | WebSocket 断开时清理会话历史 |
 
 ## 系统提示词
@@ -79,7 +80,10 @@ src/main/resources/
 | `/chat` | POST | 无状态 REST，接受 `{"message":"..."}` 返回 `{"reply":"..."}` |
 | `/ws` | WS | STOMP/SockJS 端点，每个浏览器会话维护独立消息历史 |
 
-WebSocket 流程：客户端发送至 `/app/chat`，订阅 `/user/queue/replies`，使用 `@SendToUser` 实现按会话路由。
+WebSocket 消息体：`{"message": "...", "provider": "anthropic"}`（provider 可省略，缺省 anthropic）
+REST 请求体：`{"message": "...", "provider": "openai"}`（provider 同样可省略）
+
+WebSocket 流程：客户端发送至 `/app/chat`，订阅 `/user/queue/replies`，使用 `@SendToUser` 实现按会话路由。UI 在 header 下方提供提供商选择栏，每次发送时将选中的提供商写入消息体。
 
 ## 配置
 
@@ -113,6 +117,6 @@ spring:
 ## 需要注意的地方
 
 - Spring Boot 4.0.6 和 Spring AI 2.0.0-M5 均为里程碑版本，`settings.gradle.kts` 和 `build.gradle.kts` 中必须包含 Spring 里程碑 Maven 仓库。**不要升级这些版本**，除非同时验证两者的兼容性。
-- 四家提供商的依赖均已添加（Anthropic、OpenAI、Ollama、Google GenAI）。Spring AI 的自动配置是有条件的——只有设置了有效 API 密钥的提供商才会创建 ChatModel bean。**同时设置多个提供商的密钥会导致 Spring 报告 bean 歧义错误**，请一次只激活一个提供商。
+- 四家提供商的依赖均已添加（Anthropic、OpenAI、Ollama、Google GenAI）。服务通过 `ApplicationContext.getBeansOfType(ChatModel)` 在运行时发现所有可用 ChatModel bean，不存在 bean 歧义问题——可同时配置多个提供商，UI 允许在会话中切换。未配置某提供商时，选择该提供商会自动回退到 Anthropic。
 - `.env` 文件**绝对不能提交到版本控制**。`.gitignore` 已排除该文件。
 - `ChineseRoomService.kt` 文件名与类名 `中文屋服务` 不一致，这是有意为之。Kotlin 不强制要求文件名与类名匹配。

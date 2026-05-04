@@ -31,7 +31,7 @@ The more you try to reason with it, the more serene it becomes.
 
 ```bash
 cp .env.example .env
-# Add your ANTHROPIC_API_KEY to .env
+# Fill in at least one API key — ANTHROPIC_API_KEY is the default
 
 ./run.sh        # Linux/macOS
 ./run.ps1       # Windows
@@ -44,23 +44,55 @@ The app starts on **http://localhost:8080**.
 | Endpoint | Method | Purpose |
 |---|---|---|
 | `/` | GET | Chat UI (WebSocket) |
-| `/chat` | POST | Stateless REST — `{"message": "..."}` → `{"reply": "..."}` |
+| `/chat` | POST | Stateless REST — `{"message": "...", "provider": "anthropic"}` → `{"reply": "..."}` |
 | `/ws` | WS | STOMP/SockJS — persistent session with conversation history |
+
+`provider` is optional on both endpoints — omit it and the room uses Anthropic.
+
+## Switching Providers
+
+The chat UI has a provider selector bar (Anthropic / OpenAI / Ollama / Gemini). Switch at any time mid-conversation; the session history is shared across providers so the room remembers what was said regardless of which model replies.
+
+Via REST, pass the provider in the request body:
+```bash
+curl -X POST http://localhost:8080/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "hello", "provider": "openai"}'
+```
+
+If the selected provider has no API key configured the room falls back to Anthropic silently.
 
 ## Tech Stack
 
 - Spring Boot 4 · Spring AI 2.0.0-M5 · Kotlin
-- Provider: Anthropic (configurable via `application.yml`)
-- Default model: `claude-haiku-4-5`
+- Providers: Anthropic, OpenAI, Ollama, Google Gemini (configure any or all)
+- Default provider: Anthropic · Default model: `claude-haiku-4-5`
 
 ## Configuration
 
 ```yaml
-# application.yml
+# application.yml — configure whichever providers you want active
 spring:
   ai:
     anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
       chat:
         options:
-          model: claude-haiku-4-5   # swap for claude-sonnet-4-6 etc.
+          model: claude-haiku-4-5
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-4o-mini
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      chat:
+        options:
+          model: llama3.2
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:}
+        chat:
+          options:
+            model: gemini-2.0-flash
 ```
