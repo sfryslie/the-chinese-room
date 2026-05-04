@@ -10,7 +10,7 @@ class ChatRestController(private val service: 中文屋服务) {
 
     @PostMapping("/chat")
     fun chat(@RequestBody request: ChatRequest): ChatResponse {
-        val reply = service.chatStateless(request.message)
+        val reply = service.无状态对话(request.message)
         return ChatResponse(reply)
     }
 }
