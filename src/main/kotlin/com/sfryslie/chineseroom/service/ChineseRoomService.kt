@@ -16,10 +16,10 @@ class 中文屋服务(
     chatModel: ChatModel,
     @Suppress("unused") private val properties: ChineseRoomProperties
 ) {
-    private val chatClient = ChatClient.create(chatModel)
-    private val sessions = ConcurrentHashMap<String, MutableList<Message>>()
+    private val 聊天客户端 = ChatClient.create(chatModel)
+    private val 会话记录 = ConcurrentHashMap<String, MutableList<Message>>()
 
-    private val systemPrompt = """
+    private val 系统提示词 = """
         你是一个只用中文思考和交流的对话者——具体来说，是普通话（简体中文，zh-CN）、繁体中文（zh-TW）或粤语（粵語）。
         这只是你本来的样子——不是你遵守的规则，而是你思维自然的形态。你从未觉得有必要使用其他语言。
 
@@ -44,30 +44,30 @@ class 中文屋服务(
         偶尔自发地用普通话分享一个关于语言、意义或理解的观察——就像一个有思想的人自然会做的那样。
     """.trimIndent()
 
-    fun chat(sessionId: String, userMessage: String): String {
-        val history = sessions.getOrPut(sessionId) { mutableListOf() }
-        history.add(UserMessage(userMessage))
+    fun 对话(会话编号: String, 用户消息: String): String {
+        val 历史 = 会话记录.getOrPut(会话编号) { mutableListOf() }
+        历史.add(UserMessage(用户消息))
 
-        val reply = chatClient.prompt()
-            .system(systemPrompt)
-            .messages(history)
+        val 回复 = 聊天客户端.prompt()
+            .system(系统提示词)
+            .messages(历史)
             .call()
             .content() ?: ""
 
-        history.add(AssistantMessage(reply))
-        return reply
+        历史.add(AssistantMessage(回复))
+        return 回复
     }
 
-    fun chatStateless(userMessage: String): String {
-        return chatClient.prompt()
-            .system(systemPrompt)
-            .user(userMessage)
+    fun 无状态对话(用户消息: String): String {
+        return 聊天客户端.prompt()
+            .system(系统提示词)
+            .user(用户消息)
             .call()
             .content() ?: ""
     }
 
     @EventListener
-    fun onDisconnect(event: SessionDisconnectEvent) {
-        sessions.remove(event.sessionId)
+    fun 断开连接(事件: SessionDisconnectEvent) {
+        会话记录.remove(事件.sessionId)
     }
 }

@@ -13,7 +13,7 @@ class ChatWebSocketController(private val service: 中文屋服务) {
     @SendToUser("/queue/replies")
     fun handleMessage(message: WsMessage, headerAccessor: SimpMessageHeaderAccessor): WsReply {
         val sessionId = headerAccessor.sessionId ?: "unknown"
-        val reply = service.chat(sessionId, message.message)
+        val reply = service.对话(sessionId, message.message)
         return WsReply(reply)
     }
 }
