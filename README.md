@@ -29,6 +29,18 @@ The more you try to reason with it, the more serene it becomes.
 
 ## Running It
 
+### With Docker (zero config — recommended)
+
+No API keys needed. Ships with Ollama and `qwen2.5:0.5b` bundled.
+
+```bash
+docker compose up --build
+```
+
+The first run downloads the model (~400 MB) and may take a few minutes. Subsequent starts are instant — the model is cached in a Docker volume. The app will be live at **http://localhost:8080** once the model is ready.
+
+### Locally (bring your own API key)
+
 ```bash
 cp .env.example .env
 # Fill in at least one API key — ANTHROPIC_API_KEY is the default
@@ -43,11 +55,27 @@ The app starts on **http://localhost:8080**.
 
 | Endpoint | Method | Purpose |
 |---|---|---|
-| `/` | GET | Chat UI (WebSocket) |
+| `/` | GET | Chat UI — plain HTML, SockJS/STOMP WebSocket |
+| `/vaadin` | GET | Chat UI — Vaadin 25, same features |
 | `/chat` | POST | Stateless REST — `{"message": "...", "provider": "anthropic"}` → `{"reply": "..."}` |
 | `/ws` | WS | STOMP/SockJS — persistent session with conversation history |
+| `/chat-ws` | WS | Plain WebSocket (no STOMP) — for mobile/native clients |
 
-`provider` is optional on both endpoints — omit it and the room uses Anthropic.
+`provider` is optional on all endpoints — omit it and the room uses the configured default (Anthropic when running locally, Ollama when running via Docker Compose).
+
+### Plain WebSocket protocol (`/chat-ws`)
+
+Send JSON, receive JSON:
+
+```json
+// send
+{"message": "你好", "provider": "ollama"}
+
+// receive
+{"reply": "你好！很高兴认识你。请问有什么我可以帮助你的吗？"}
+```
+
+`provider` is optional. Each connection maintains its own conversation history; history is cleared on disconnect.
 
 ## Switching Providers
 
