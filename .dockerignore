@@ -1,0 +1,9 @@
+.gradle/
+build/
+.env
+.git/
+.gitignore
+*.md
+run.sh
+run.ps1
+docker-compose.yml

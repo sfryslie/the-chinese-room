@@ -60,8 +60,10 @@ class 中文屋服务(
         偶尔自发地用普通话分享一个关于语言、意义或理解的观察——就像一个有思想的人自然会做的那样。
     """.trimIndent()
 
-    private fun 获取客户端(提供商: String?): ChatClient =
-        提供商映射[提供商] ?: 提供商映射["anthropic"] ?: 提供商映射.values.first()
+    private fun 获取客户端(提供商: String?): ChatClient {
+        val key = 提供商 ?: properties.provider
+        return 提供商映射[key] ?: 提供商映射[properties.provider] ?: 提供商映射.values.first()
+    }
 
     fun 对话(会话编号: String, 用户消息: String, 提供商: String? = null): String {
         val 历史 = 会话记录.getOrPut(会话编号) { mutableListOf() }

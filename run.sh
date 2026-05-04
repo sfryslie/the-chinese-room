@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export LANG=C.utf8
+export LC_ALL=C.utf8
+
 if [ -f .env ]; then
   while IFS= read -r line; do
     line="${line%$'\r'}"
