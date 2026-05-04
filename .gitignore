@@ -6,3 +6,8 @@ build/
 *.iml
 .DS_Store
 out/
+src/main/frontend/generated/
+src/main/frontend/index.html
+node_modules/
+package.json
+package-lock.json
