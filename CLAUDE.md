@@ -8,7 +8,7 @@
 
 - **Spring Boot 4.0.6** + **Spring AI 2.0.0-M5**（里程碑版本，需要 `https://repo.spring.io/milestone` 仓库）
 - **Kotlin**，Gradle Kotlin DSL 构建
-- **AI 提供商**：Anthropic（仅此一家，无需其他提供商）
+- **AI 提供商**：Anthropic、OpenAI、Ollama、Google Gemini（均已配置，按需填写密钥即可）
 - **Web 层**：Spring MVC（REST）+ Spring WebSocket（STOMP/SockJS）
 - **默认模型**：`claude-haiku-4-5`（可在 `application.yml` 中配置）
 
@@ -84,7 +84,7 @@ WebSocket 流程：客户端发送至 `/app/chat`，订阅 `/user/queue/replies`
 ## 配置
 
 ```yaml
-# application.yml
+# application.yml — 默认使用 Anthropic，修改模型名称即可切换
 spring:
   ai:
     anthropic:
@@ -92,15 +92,27 @@ spring:
       chat:
         options:
           model: claude-haiku-4-5   # 可替换为 claude-sonnet-4-6 等
-
-chinese-room:
-  model: claude-haiku-4-5
-  provider: anthropic
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-4o-mini
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      chat:
+        options:
+          model: llama3.2
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:}
+        chat:
+          options:
+            model: gemini-2.0-flash
 ```
 
 ## 需要注意的地方
 
 - Spring Boot 4.0.6 和 Spring AI 2.0.0-M5 均为里程碑版本，`settings.gradle.kts` 和 `build.gradle.kts` 中必须包含 Spring 里程碑 Maven 仓库。**不要升级这些版本**，除非同时验证两者的兼容性。
-- 项目有意只依赖 Anthropic 一家提供商。不要添加 OpenAI、Ollama 或 Google GenAI 依赖。
+- 四家提供商的依赖均已添加（Anthropic、OpenAI、Ollama、Google GenAI）。Spring AI 的自动配置是有条件的——只有设置了有效 API 密钥的提供商才会创建 ChatModel bean。**同时设置多个提供商的密钥会导致 Spring 报告 bean 歧义错误**，请一次只激活一个提供商。
 - `.env` 文件**绝对不能提交到版本控制**。`.gitignore` 已排除该文件。
 - `ChineseRoomService.kt` 文件名与类名 `中文屋服务` 不一致，这是有意为之。Kotlin 不强制要求文件名与类名匹配。
