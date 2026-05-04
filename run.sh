@@ -2,10 +2,10 @@
 set -euo pipefail
 
 if [ -f .env ]; then
-  while IFS='=' read -r key value; do
-    [[ "$key" =~ ^[[:space:]]*# ]] && continue
-    [[ -z "${key// }" ]] && continue
-    export "$key=$value"
+  while IFS= read -r line; do
+    line="${line%$'\r'}"
+    [[ "$line" =~ ^([A-Za-z_][A-Za-z0-9_]*)=(.*)$ ]] || continue
+    export "${BASH_REMATCH[1]}=${BASH_REMATCH[2]}"
   done < .env
   echo "[run.sh] .env loaded"
 else
