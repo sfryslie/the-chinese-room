@@ -27,6 +27,9 @@ spring:
           options:
             model: gemini-2.0-flash
 
+vaadin:
+  productionMode: true
+
 chinese-room:
   model: claude-haiku-4-5
   provider: anthropic

@@ -26,6 +26,10 @@ repositories {
 extra["springAiVersion"] = "2.0.0-M5"
 extra["vaadinVersion"] = "25.0.0"
 
+configurations.all {
+    resolutionStrategy.force("com.fasterxml.jackson.core:jackson-annotations:2.21")
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
@@ -47,6 +51,11 @@ dependencyManagement {
         mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
         mavenBom("com.vaadin:vaadin-bom:${property("vaadinVersion")}")
     }
+    dependencies {
+        dependency("com.fasterxml.jackson.core:jackson-annotations:2.21")
+        dependency("com.fasterxml.jackson.core:jackson-core:2.21.2")
+        dependency("com.fasterxml.jackson.core:jackson-databind:2.21.2")
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -58,4 +67,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named("bootRun") {
+    dependsOn("vaadinBuildFrontend")
 }
