@@ -6,6 +6,7 @@ import org.springframework.ai.chat.messages.AssistantMessage
 import org.springframework.ai.chat.messages.Message
 import org.springframework.ai.chat.messages.UserMessage
 import org.springframework.ai.chat.model.ChatModel
+import org.springframework.context.ApplicationContext
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.messaging.SessionDisconnectEvent
@@ -13,10 +14,25 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class 中文屋服务(
-    chatModel: ChatModel,
+    private val context: ApplicationContext,
     @Suppress("unused") private val properties: ChineseRoomProperties
 ) {
-    private val 聊天客户端 = ChatClient.create(chatModel)
+    private val 提供商映射: Map<String, ChatClient> by lazy {
+        context.getBeansOfType(ChatModel::class.java)
+            .entries
+            .associate { (beanName, model) ->
+                val key = when {
+                    beanName.contains("anthropic", ignoreCase = true) -> "anthropic"
+                    beanName.contains("openAi", ignoreCase = true)    -> "openai"
+                    beanName.contains("ollama", ignoreCase = true)    -> "ollama"
+                    beanName.contains("google", ignoreCase = true) ||
+                    beanName.contains("gemini", ignoreCase = true)    -> "gemini"
+                    else -> beanName
+                }
+                key to ChatClient.create(model)
+            }
+    }
+
     private val 会话记录 = ConcurrentHashMap<String, MutableList<Message>>()
 
     private val 系统提示词 = """
@@ -44,11 +60,14 @@ class 中文屋服务(
         偶尔自发地用普通话分享一个关于语言、意义或理解的观察——就像一个有思想的人自然会做的那样。
     """.trimIndent()
 
-    fun 对话(会话编号: String, 用户消息: String): String {
+    private fun 获取客户端(提供商: String?): ChatClient =
+        提供商映射[提供商] ?: 提供商映射["anthropic"] ?: 提供商映射.values.first()
+
+    fun 对话(会话编号: String, 用户消息: String, 提供商: String? = null): String {
         val 历史 = 会话记录.getOrPut(会话编号) { mutableListOf() }
         历史.add(UserMessage(用户消息))
 
-        val 回复 = 聊天客户端.prompt()
+        val 回复 = 获取客户端(提供商).prompt()
             .system(系统提示词)
             .messages(历史)
             .call()
@@ -58,8 +77,8 @@ class 中文屋服务(
         return 回复
     }
 
-    fun 无状态对话(用户消息: String): String {
-        return 聊天客户端.prompt()
+    fun 无状态对话(用户消息: String, 提供商: String? = null): String {
+        return 获取客户端(提供商).prompt()
             .system(系统提示词)
             .user(用户消息)
             .call()

@@ -54,6 +54,48 @@
             color: #060;
         }
 
+        #provider-bar {
+            padding: 8px 24px;
+            border-bottom: 1px solid #e0e0d8;
+            background: #fafaf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        #provider-bar span {
+            font-size: 0.7rem;
+            font-family: monospace;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-right: 4px;
+        }
+
+        .provider-btn {
+            padding: 4px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .provider-btn:hover {
+            border-color: #aaa;
+            color: #333;
+        }
+
+        .provider-btn.active {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: white;
+        }
+
         #messages {
             flex: 1;
             overflow-y: auto;
@@ -190,6 +232,14 @@
     <div id="status">disconnected</div>
 </header>
 
+<div id="provider-bar">
+    <span>Provider:</span>
+    <button class="provider-btn active" data-provider="anthropic">Anthropic</button>
+    <button class="provider-btn" data-provider="openai">OpenAI</button>
+    <button class="provider-btn" data-provider="ollama">Ollama</button>
+    <button class="provider-btn" data-provider="gemini">Gemini</button>
+</div>
+
 <div id="messages">
     <div class="welcome">
         <p>Type anything. The room will respond.</p>
@@ -212,6 +262,15 @@
     const statusEl   = document.getElementById('status');
     let thinkingEl   = null;
     let welcomeEl    = messagesEl.querySelector('.welcome');
+    let selectedProvider = 'anthropic';
+
+    document.querySelectorAll('.provider-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.provider-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedProvider = btn.dataset.provider;
+        });
+    });
 
     function setConnected(connected) {
         statusEl.textContent = connected ? 'connected' : 'disconnected';
@@ -263,7 +322,7 @@
 
         client.publish({
             destination: '/app/chat',
-            body: JSON.stringify({ message: text })
+            body: JSON.stringify({ message: text, provider: selectedProvider })
         });
     }
 
