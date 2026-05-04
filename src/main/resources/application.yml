@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    banner-mode: off
+  ai:
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
+      chat:
+        options:
+          model: claude-haiku-4-5
+
+chinese-room:
+  model: claude-haiku-4-5
+  provider: anthropic
+
+logging:
+  level:
+    com.sfryslie: INFO
+    org.springframework.ai: WARN
+    org.springframework: WARN

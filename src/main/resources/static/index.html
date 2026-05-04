@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Chinese Room</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #fafaf8;
+            color: #1a1a1a;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 14px 24px;
+            border-bottom: 1px solid #e0e0d8;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .title-block h1 {
+            font-size: 1.3rem;
+            font-weight: normal;
+            letter-spacing: 0.02em;
+        }
+
+        .title-block p {
+            font-size: 0.72rem;
+            color: #999;
+            font-family: monospace;
+            margin-top: 2px;
+        }
+
+        #status {
+            font-size: 0.72rem;
+            font-family: monospace;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #fee;
+            color: #b00;
+            transition: all 0.3s;
+        }
+
+        #status.connected {
+            background: #efe;
+            color: #060;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .welcome {
+            text-align: center;
+            color: #bbb;
+            font-size: 0.82rem;
+            font-family: monospace;
+            padding: 48px 20px;
+            line-height: 2;
+        }
+
+        .welcome strong {
+            color: #888;
+        }
+
+        .message-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            max-width: 72%;
+        }
+
+        .message-group.user {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .message-group.room {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .sender-label {
+            font-size: 0.68rem;
+            font-family: monospace;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .bubble {
+            padding: 10px 14px;
+            border-radius: 14px;
+            line-height: 1.55;
+            word-break: break-word;
+        }
+
+        .message-group.user .bubble {
+            background: #ebebeb;
+            border-bottom-right-radius: 4px;
+            font-family: monospace;
+            font-size: 0.88rem;
+            color: #333;
+        }
+
+        .message-group.room .bubble {
+            background: #e8f0fe;
+            border-bottom-left-radius: 4px;
+            font-size: 1.15rem;
+            color: #1a1a2e;
+            letter-spacing: 0.03em;
+        }
+
+        .bubble.thinking {
+            font-style: italic;
+            color: #aaa;
+            font-size: 0.82rem;
+            font-family: monospace;
+            background: #f5f5f5;
+        }
+
+        #input-area {
+            padding: 14px 24px;
+            border-top: 1px solid #e0e0d8;
+            background: white;
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-family: monospace;
+            outline: none;
+            background: #fafaf8;
+            transition: border-color 0.15s;
+        }
+
+        #messageInput:focus {
+            border-color: #999;
+        }
+
+        #sendButton {
+            padding: 10px 22px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            font-family: monospace;
+            letter-spacing: 0.04em;
+            transition: background 0.15s;
+        }
+
+        #sendButton:hover:not(:disabled) {
+            background: #333;
+        }
+
+        #sendButton:disabled {
+            background: #ccc;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="title-block">
+        <h1>The Chinese Room</h1>
+        <p>Searle (1980) &mdash; faithfully implemented</p>
+    </div>
+    <div id="status">disconnected</div>
+</header>
+
+<div id="messages">
+    <div class="welcome">
+        <p>Type anything. The room will respond.</p>
+        <p>The room does not speak Mandarin.</p>
+        <p>The room is not an AI. <strong>It is a room.</strong></p>
+    </div>
+</div>
+
+<div id="input-area">
+    <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" disabled />
+    <button id="sendButton" disabled>Send</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+<script>
+    const messagesEl = document.getElementById('messages');
+    const inputEl    = document.getElementById('messageInput');
+    const sendBtn    = document.getElementById('sendButton');
+    const statusEl   = document.getElementById('status');
+    let thinkingEl   = null;
+    let welcomeEl    = messagesEl.querySelector('.welcome');
+
+    function setConnected(connected) {
+        statusEl.textContent = connected ? 'connected' : 'disconnected';
+        statusEl.className   = connected ? 'connected' : '';
+        inputEl.disabled     = !connected;
+        sendBtn.disabled     = !connected;
+        if (connected) inputEl.focus();
+    }
+
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/\n/g, '<br>');
+    }
+
+    function addMessage(side, text, isThinking) {
+        if (welcomeEl) { welcomeEl.remove(); welcomeEl = null; }
+
+        const group = document.createElement('div');
+        group.className = 'message-group ' + side;
+
+        const label = document.createElement('div');
+        label.className = 'sender-label';
+        label.textContent = side === 'user' ? 'You' : 'The Room';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble' + (isThinking ? ' thinking' : '');
+        bubble.innerHTML = isThinking ? text : escapeHtml(text);
+
+        group.appendChild(label);
+        group.appendChild(bubble);
+        messagesEl.appendChild(group);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        return group;
+    }
+
+    function send() {
+        const text = inputEl.value.trim();
+        if (!text || sendBtn.disabled) return;
+        inputEl.value    = '';
+        inputEl.disabled = true;
+        sendBtn.disabled = true;
+
+        addMessage('user', text);
+        thinkingEl = addMessage('room', 'consulting the rulebook&hellip;', true);
+
+        client.publish({
+            destination: '/app/chat',
+            body: JSON.stringify({ message: text })
+        });
+    }
+
+    sendBtn.addEventListener('click', send);
+    inputEl.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+    });
+
+    const client = new StompJs.Client({
+        webSocketFactory: () => new SockJS('/ws'),
+        reconnectDelay: 5000,
+        onConnect: () => {
+            setConnected(true);
+            client.subscribe('/user/queue/replies', msg => {
+                if (thinkingEl) { thinkingEl.remove(); thinkingEl = null; }
+                const data = JSON.parse(msg.body);
+                addMessage('room', data.reply);
+                inputEl.disabled = false;
+                sendBtn.disabled = false;
+                inputEl.focus();
+            });
+        },
+        onDisconnect: () => setConnected(false),
+        onStompError: frame => {
+            console.error('STOMP error', frame);
+            setConnected(false);
+        }
+    });
+    client.activate();
+</script>
+
+</body>
+</html>
