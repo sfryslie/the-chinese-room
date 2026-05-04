@@ -259,7 +259,7 @@
         sendBtn.disabled = true;
 
         addMessage('user', text);
-        thinkingEl = addMessage('room', 'consulting the rulebook&hellip;', true);
+        thinkingEl = addMessage('room', '正在处理符号…', true);
 
         client.publish({
             destination: '/app/chat',

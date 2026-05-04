@@ -1,13 +1,13 @@
 package com.sfryslie.chineseroom.controller
 
-import com.sfryslie.chineseroom.service.ChineseRoomService
+import com.sfryslie.chineseroom.service.中文屋服务
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor
 import org.springframework.messaging.simp.annotation.SendToUser
 import org.springframework.stereotype.Controller
 
 @Controller
-class ChatWebSocketController(private val service: ChineseRoomService) {
+class ChatWebSocketController(private val service: 中文屋服务) {
 
     @MessageMapping("/chat")
     @SendToUser("/queue/replies")
