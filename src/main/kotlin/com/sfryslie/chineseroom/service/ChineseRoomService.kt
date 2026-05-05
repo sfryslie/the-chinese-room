@@ -4,8 +4,10 @@ import com.sfryslie.chineseroom.config.ChineseRoomProperties
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.messages.AssistantMessage
 import org.springframework.ai.chat.messages.Message
+import org.springframework.ai.chat.messages.SystemMessage
 import org.springframework.ai.chat.messages.UserMessage
 import org.springframework.ai.chat.model.ChatModel
+import reactor.core.publisher.Flux
 import org.springframework.context.ApplicationContext
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
@@ -94,5 +96,24 @@ class 中文屋服务(
 
     fun 清除会话(sessionId: String) {
         会话记录.remove(sessionId)
+    }
+
+    fun openAi兼容对话(消息列表: List<Message>, 提供商: String?): String {
+        return 获取客户端(提供商).prompt()
+            .messages(补全系统提示(消息列表))
+            .call()
+            .content() ?: ""
+    }
+
+    fun openAi兼容流式对话(消息列表: List<Message>, 提供商: String?): Flux<String> {
+        return 获取客户端(提供商).prompt()
+            .messages(补全系统提示(消息列表))
+            .stream()
+            .content()
+    }
+
+    private fun 补全系统提示(消息列表: List<Message>): List<Message> {
+        val hasSystem = 消息列表.any { it is SystemMessage }
+        return if (hasSystem) 消息列表 else listOf(SystemMessage(系统提示词)) + 消息列表
     }
 }
