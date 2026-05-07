@@ -1,3 +1,7 @@
+btw I havent tested this yet since I vibecoded a bunch of it while in the airport. Will be back May 10th to clean up this mess. it might work. it worked last weekend.
+
+This Chinese room was 100% built by the Chinese Room.
+
 # The Chinese Room
 
 A playful implementation of John Searle's [Chinese Room thought experiment](https://en.wikipedia.org/wiki/Chinese_room) as an interactive chatbot.
