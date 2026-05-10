@@ -1,3 +1,7 @@
+## Repo is still a Work-In-Progress
+
+I'm purely vibecoding because the whole point of this is to have Claude Code be solely responsible for it, and I was doing most of this on my phone at the airport. I'm working through it a bit now to fix it up.
+
 # The Chinese Room
 
 In 1980, philosopher John Searle proposed a thought experiment called "[the Chinese Room](https://en.wikipedia.org/wiki/Chinese_room)" to challenge the claim that a computer running a program could be said to truly "understand" language or have a mind.
