@@ -5,7 +5,7 @@ ENV LC_ALL=C.utf8
 
 COPY gradle/ gradle/
 COPY gradlew build.gradle.kts settings.gradle.kts ./
-RUN chmod +x gradlew
+RUN chmod +x gradlew && sed -i 's/\r$//' gradlew
 
 # Download dependencies (cached layer before copying source)
 RUN ./gradlew dependencies --no-daemon -q 2>/dev/null; exit 0

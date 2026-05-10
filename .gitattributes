@@ -1,2 +1,9 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Shell scripts and Gradle wrapper must always use LF — CRLF breaks execution
+# on Linux/Docker even when checked out on Windows (autocrlf=true)
+gradlew        text eol=lf
+*.sh           text eol=lf
+*.ps1          text eol=crlf
+
