@@ -29,6 +29,7 @@ spring:
 
 vaadin:
   productionMode: true
+  eagerServerLoad: true
 
 chinese-room:
   model: claude-haiku-4-5
@@ -39,3 +40,5 @@ logging:
     com.sfryslie: INFO
     org.springframework.ai: WARN
     org.springframework: WARN
+    com.vaadin: WARN
+    org.atmosphere: WARN
