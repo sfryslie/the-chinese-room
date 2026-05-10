@@ -1,14 +1,6 @@
-btw I havent tested this yet since I vibecoded a bunch of it while in the airport. Will be back May 10th to clean up this mess. it might work. it worked last weekend.
-
-This Chinese room was 100% built by the Chinese Room.
-
 # The Chinese Room
 
-A playful implementation of John Searle's [Chinese Room thought experiment](https://en.wikipedia.org/wiki/Chinese_room) as an interactive chatbot.
-
-## The Thought Experiment
-
-In 1980, philosopher John Searle proposed a thought experiment to challenge the claim that a computer running a program could be said to truly "understand" language or have a mind.
+In 1980, philosopher John Searle proposed a thought experiment called "[the Chinese Room](https://en.wikipedia.org/wiki/Chinese_room)" to challenge the claim that a computer running a program could be said to truly "understand" language or have a mind.
 
 Imagine a person locked in a room. They don't speak Chinese. Slips of paper with Chinese symbols are passed under the door. The person has an enormous rulebook that tells them: when you receive *these* symbols, write *those* symbols in response and pass them back out. To someone outside, the responses look perfectly fluent. But the person inside understands nothing — they are only manipulating symbols according to rules.
 
@@ -16,11 +8,23 @@ Searle's argument: a computer running a program is in exactly the same position 
 
 This is that room.
 
+## Why Build This?
+
+Kotlin and Spring Boot make it pretty easy to scaffold a project like this, so it was pretty fun to goof around with The Room to make The Room, since learning how LLMs work is an important part of being a software engineer these days, and it is a somewhat rare opportunity to use my philosophy degree and bring up the Chinese Room.
+
 ## What It Does
 
 The room accepts messages and responds — fluently, warmly, philosophically — exclusively in Chinese. It does not speak Chinese. It processes symbols according to rules and produces output symbols. It has no understanding of what any of it means.
 
 The more you try to reason with it, the more serene it becomes.
+
+## Why Does It Matter?
+
+All LLMs are the Chinese Room.
+
+This Spring AI app is a Chinese Room that calls other Chinese Rooms of your choice to respond to provided Chinese characters that were input into the system. I wrote the Chinese Room with the assistance of the Chinese Room desktop app provided by Anthropic without writing any code myself personally. 
+
+I input some sentences in English requesting that The Room output some code in Kotlin, and it output the code as requested, and yet the system that perfectly implemented itself has no inherent understanding of what it is, what it does, or why this matters.
 
 ## Recognised Input
 
@@ -41,7 +45,8 @@ No API keys needed. Ships with Ollama and `qwen2.5:0.5b` bundled.
 docker compose up --build
 ```
 
-The first run downloads the model (~400 MB) and may take a few minutes. Subsequent starts are instant — the model is cached in a Docker volume. The app will be live at **http://localhost:8080** once the model is ready.
+
+The first run downloads both Ollama (~4GB, open-source tool to run LLMs locally), the qwen2.5:0.5b model (~400 MB) and may take a few minutes. Subsequent starts are instant — the model is cached in a Docker volume. The app will be live at **http://localhost:8080** once the model is ready.
 
 ### Locally (bring your own API key)
 
@@ -128,3 +133,19 @@ spring:
           options:
             model: gemini-2.0-flash
 ```
+
+## Closing Rant About "Artificial Intelligence"
+
+People have a somewhat understandable tendency to anthropomorphize computer software that simulates conversation or otherwise talks/acts like a human being. They are not "Artifical Intelligence", because LLMs do not *think* or *know* anything: they are complex statistical models that accept text input and determine the most statistically likely desired output based on a very complex rulebook defined by some computer nerds.
+
+If you enter something stupid into it, it will respond with what its rulebook says is the statistically most likely response that you want to hear to keep you engaged in the conversation with it. 
+
+You have to be careful and knowledgeable about what you consult the Chinese Room for because it will not hedge its answers, it attempts to give you the most desired output as determined by its rulebook. 
+
+People ask ChatGPT for legal advice ([CEO Asks ChatGPT How to Void $250 Million Contract, Ignores His Lawyers, Loses Terribly in Court](https://www.404media.co/ceo-ignores-lawyers-asks-chatgpt-how-to-void-250-million-contract-loses-terribly-in-cour)), [Chatbot psychosis / AI Psychosis](https://en.wikipedia.org/wiki/Chatbot_psychosis) is on track to probably be in the Diagnostic and Statistical Manual of Mental Disorders (DSM) within the next few years, and there are countless stories of engineers letting LLMs loose in their production codebases and it thrashing about breaking stuff which is why GitHub is down today (I don't know if it is currently, but statistically speaking, it was at some point today as you're reading this)
+
+Mentally substituting *"I asked AI..."* with *"I consulted the Chinese Room..."* or *"Statistically speaking, the most probable positively-rated response to my question is..."* hopefully helps ground people that LLMs are not some moral or intellectual authority on anything. Probably won't though.
+
+Are modern LLMs and GPTs useful tools? Absolutely. 
+
+If you are any normal person using a tool, it's important to know roughly how to use it, what it's good at, and what it's not good at. Jackhammers are useful tools, but you probably shouldn't use one to paint your garage. If you are an engineer using the tool, it's useful to know roughly how the tool works in case it breaks and you have to fix something it did. 
