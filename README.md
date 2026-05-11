@@ -14,7 +14,7 @@ This is that room.
 
 ## Why Build This?
 
-Kotlin and Spring Boot make it pretty easy to scaffold a project like this, so it was pretty fun to goof around with The Room to make The Room, since learning how LLMs work is an important part of being a software engineer these days, and it is a somewhat rare opportunity to use my philosophy degree and bring up the Chinese Room.
+Kotlin and Spring Boot make it pretty easy to scaffold a project like this, so it was pretty fun to goof around, since learning how LLMs work is an important part of being a software engineer these days, and it is a somewhat rare opportunity to use my philosophy degree and bring up the Chinese Room.
 
 ## What It Does
 
