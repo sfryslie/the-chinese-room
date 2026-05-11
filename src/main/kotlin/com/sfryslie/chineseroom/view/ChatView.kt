@@ -16,7 +16,7 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 
-@Route("vaadin")
+@Route("room")
 @PageTitle("The Chinese Room — Vaadin")
 class ChatView(
     private val service: 中文屋服务,

@@ -10,7 +10,7 @@
 - **Kotlin**，Gradle Kotlin DSL 构建
 - **AI 提供商**：Anthropic、OpenAI、Ollama、Google Gemini（均已配置，按需填写密钥即可）
 - **Web 层**：Spring MVC（REST）+ Spring WebSocket（STOMP/SockJS）+ 原生 WebSocket（`/chat-ws`）
-- **UI**：静态 HTML（`/`）+ Vaadin 25（`/vaadin`）
+- **UI**：静态 HTML（`/`）+ Vaadin 25（`/room`）
 - **容器化**：Docker Compose，默认使用 Ollama + `qwen2.5:0.5b`（无需 API 密钥）
 - **默认模型**：`claude-haiku-4-5`（本地运行）或 `qwen2.5:0.5b`（Docker Compose）
 
@@ -96,7 +96,7 @@ src/main/resources/
 | 端点 | 方法 | 说明 |
 |---|---|---|
 | `/` | GET | 聊天界面（静态 HTML） |
-| `/vaadin` | GET | 聊天界面（Vaadin 25） |
+| `/room` | GET | 聊天界面（Vaadin 25） |
 | `/chat` | POST | 无状态 REST，接受 `{"message":"..."}` 返回 `{"reply":"..."}` |
 | `/ws` | WS | STOMP/SockJS 端点，每个浏览器会话维护独立消息历史 |
 | `/chat-ws` | WS | 原生 WebSocket 端点，适用于移动端/原生客户端 |
