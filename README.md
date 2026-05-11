@@ -144,7 +144,7 @@ People have a somewhat understandable tendency to anthropomorphize computer soft
 
 If you enter something stupid into it, it will respond with what its rulebook says is the statistically most likely response that you want to hear to keep you engaged in the conversation with it. 
 
-You have to be careful and knowledgeable about what you consult the Chinese Room for because it will not hedge its answers, it attempts to give you the most desired output as determined by its rulebook. 
+You have to be careful and knowledgeable about what you consult the Chinese Room for because it will not always hedge its answers, admit its shortcomings, or tell you that your question is too vague and sucks: it attempts to give you the most desired output as determined by its rulebook, and therefore it is statistically unlikely that the most desired output from the user's input is something leading with "I'm certainly not an expert on this particular topic, but this would be my best guess based on your poorly worded question..."
 
 People ask ChatGPT for legal advice ([CEO Asks ChatGPT How to Void $250 Million Contract, Ignores His Lawyers, Loses Terribly in Court](https://www.404media.co/ceo-ignores-lawyers-asks-chatgpt-how-to-void-250-million-contract-loses-terribly-in-cour)), [Chatbot psychosis / AI Psychosis](https://en.wikipedia.org/wiki/Chatbot_psychosis) is on track to probably be in the Diagnostic and Statistical Manual of Mental Disorders (DSM) within the next few years, and there are countless stories of engineers letting LLMs loose in their production codebases and it thrashing about breaking stuff which is why GitHub is down today (I don't know if it is currently, but statistically speaking, it was at some point today as you're reading this)
 
