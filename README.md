@@ -1,26 +1,24 @@
-## Repo is still a Work-In-Progress
-
-I'm purely vibecoding because the whole point of this is to have Claude Code be solely responsible for it, and I was doing most of this on my phone at the airport. I'm working through it a bit now to fix it up.
-
 # The Chinese Room
 
-In 1980, philosopher John Searle proposed a thought experiment called "[the Chinese Room](https://en.wikipedia.org/wiki/Chinese_room)" to challenge the claim that a computer running a program could be said to truly "understand" language or have a mind.
+The Chinese Room is a thought experiment posed by the philosopher John Searle back in 1980. It‘s a fun exploration into the philosophies of language and mind, exploring how computers “think” and if “strong AI” (AGI is what we say nowadays) is possible.
+
+While it has caused a lot of interesting debate back in the day, over 45 years later, it’s become more and more relevant as computers went from an expensive novelty to the one thing our lives and society largely depend on.
+
+The Chinese Room is one of my favorite ways to start an argument, I mean scholarly debate, about epistemology because starting arguments is one of the main uses of my philosophy minor from like 10 years ago.
 
 Imagine a person locked in a room. They don't speak Chinese. Slips of paper with Chinese symbols are passed under the door. The person has an enormous rulebook that tells them: when you receive *these* symbols, write *those* symbols in response and pass them back out. To someone outside, the responses look perfectly fluent. But the person inside understands nothing — they are only manipulating symbols according to rules.
 
 Searle's argument: a computer running a program is in exactly the same position as the person in the room. It processes symbols and produces outputs. Syntax is not semantics. The behavior is indistinguishable from understanding, but there is no understanding.
 
-This is that room.
-
 ## Why Build This?
 
 Kotlin and Spring Boot make it pretty easy to scaffold a project like this, so it was pretty fun to goof around, since learning how LLMs work is an important part of being a software engineer these days, and it is a somewhat rare opportunity to use my philosophy degree and bring up the Chinese Room.
 
+Plus, I wanted to experiment with Claude Code on my personal account and vibe-code this on my phone in an airport mostly, because having a Chinese Room build the Chinese Room is fun. If there's bugs, you're absolutely right, please forgive the Room for its transgressions: it knows not what it did wrong.
+
 ## What It Does
 
 The room accepts messages and responds — fluently, warmly, philosophically — exclusively in Chinese. It does not speak Chinese. It processes symbols according to rules and produces output symbols. It has no understanding of what any of it means.
-
-The more you try to reason with it, the more serene it becomes.
 
 ## Why Does It Matter?
 
@@ -152,4 +150,9 @@ Mentally substituting *"I asked AI..."* with *"I consulted the Chinese Room..."*
 
 Are modern LLMs and GPTs useful tools? Absolutely. 
 
-If you are any normal person using a tool, it's important to know roughly how to use it, what it's good at, and what it's not good at. Jackhammers are useful tools, but you probably shouldn't use one to paint your garage. If you are an engineer using the tool, it's useful to know roughly how the tool works in case it breaks and you have to fix something it did. 
+If you are any normal person using a tool, it's important to know roughly how to use it, what it's good at, and what it's not good at. Jackhammers are useful tools, but you probably shouldn't use one to paint your garage. If you are an engineer using the tool, it's useful to know roughly how the tool works in case it breaks and you have to fix something it did.
+
+### Medium Article written by me if you want to read a longer rant about the same topic
+
+[The Chinese Room in 2026](https://medium.com/@shfryslie/dd72e6e0e225)
+
